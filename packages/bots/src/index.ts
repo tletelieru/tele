@@ -1,13 +1,18 @@
-import { nextRandom } from '@tele/engine'
-import type { Rng } from './types'
+import { easyBot } from './easy'
+import { hardBot } from './hard'
+import { mediumBot } from './medium'
+import type { Bot, Level } from './types'
 
-export type { Level, Rng } from './types'
+export { easyBot, randomBot } from './easy'
+export { hardBot } from './hard'
+export { mediumBot } from './medium'
+export { createRng } from './rng'
+export { createThinkingBot } from './thinking'
+export type { Style } from './thinking'
+export type { Bot, Level, Rng } from './types'
 
-export function createRng(seed: number): Rng {
-  let state = seed
-  return () => {
-    const random = nextRandom(state)
-    state = random.rng
-    return random.value
-  }
+export const BOTS: Record<Level, Bot> = {
+  easy: easyBot,
+  medium: mediumBot,
+  hard: hardBot,
 }
