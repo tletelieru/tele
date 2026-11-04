@@ -64,4 +64,67 @@ describe('App', () => {
     await userEvent.click(screen.getByRole('checkbox', { name: /animations|animaciones/i }))
     expect(document.documentElement.classList.contains('reduce-motion')).toBe(true)
   })
+
+  it('links the other games from the side column', () => {
+    localStorage.setItem('preferred-lang', 'en')
+    render(<App />)
+    const others = screen.getByRole('complementary', { name: 'Other games' })
+    const links = within(others).getAllByRole('link')
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      'https://tletelieru.github.io/7-de-trebol/',
+      'https://tletelieru.github.io/brisca/',
+      'https://tletelieru.github.io/escoba/',
+      'https://tletelieru.github.io/uno/',
+      'https://tletelieru.github.io/carioca/',
+    ])
+    expect(within(others).queryByRole('link', { name: /Tele/ })).toBeNull()
+  })
+
+  it('opens the other games from the header', async () => {
+    localStorage.setItem('preferred-lang', 'en')
+    render(<App />)
+    await userEvent.click(screen.getByRole('button', { name: 'Other games' }))
+    const dialog = screen.getByRole('dialog', { name: 'Other games' })
+    const links = within(dialog).getAllByRole('link')
+    expect(links.map((link) => link.getAttribute('href'))).toEqual([
+      'https://tletelieru.github.io/7-de-trebol/',
+      'https://tletelieru.github.io/brisca/',
+      'https://tletelieru.github.io/escoba/',
+      'https://tletelieru.github.io/uno/',
+      'https://tletelieru.github.io/carioca/',
+    ])
+    expect(within(dialog).queryByRole('link', { name: /Tele/ })).toBeNull()
+  })
+
+  it('hides the other games from settings', async () => {
+    localStorage.setItem('preferred-lang', 'en')
+    render(<App />)
+    await userEvent.click(screen.getByRole('button', { name: 'Settings' }))
+    await userEvent.click(screen.getByRole('checkbox', { name: /^Show other games/ }))
+    expect(localStorage.getItem('other-games')).toBe('off')
+    expect(screen.queryByRole('complementary', { name: 'Other games' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Other games' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Show other games' }).getAttribute('aria-pressed')).toBe('false')
+  })
+
+  it('toggles the side column from the header in sync with settings', async () => {
+    localStorage.setItem('preferred-lang', 'en')
+    render(<App />)
+    const hide = screen.getByRole('button', { name: 'Hide other games' })
+    expect(hide.getAttribute('aria-pressed')).toBe('true')
+    await userEvent.click(hide)
+    expect(screen.queryByRole('complementary', { name: 'Other games' })).toBeNull()
+    expect(localStorage.getItem('other-games')).toBe('off')
+    await userEvent.click(screen.getByRole('button', { name: 'Settings' }))
+    const setting = screen.getByRole('checkbox', { name: /^Show other games/ })
+    expect((setting as HTMLInputElement).checked).toBe(false)
+    await userEvent.click(setting)
+    await userEvent.keyboard('{Escape}')
+    expect(screen.getByRole('complementary', { name: 'Other games' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Hide other games' }).getAttribute('aria-pressed')).toBe('true')
+    await userEvent.click(screen.getByRole('button', { name: 'Hide other games' }))
+    await userEvent.click(screen.getByRole('button', { name: 'Show other games' }))
+    expect(screen.getByRole('complementary', { name: 'Other games' })).toBeTruthy()
+    expect(localStorage.getItem('other-games')).toBe('on')
+  })
 })
