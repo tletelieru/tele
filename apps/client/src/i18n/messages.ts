@@ -213,7 +213,7 @@ export const messages: Record<Locale, Messages> = {
     otherGames: 'Other games',
     showOtherGames: 'Show other games',
     hideOtherGames: 'Hide other games',
-    showOtherGamesHint: 'Links to the other card games: a side column on wide screens, a header button on narrow ones.',
+    showOtherGamesHint: 'A side column with the other card games on wide screens. The header button always opens them.',
   },
   es: {
     appName: 'Tele',
@@ -320,7 +320,7 @@ export const messages: Record<Locale, Messages> = {
     otherGames: 'Otros juegos',
     showOtherGames: 'Mostrar otros juegos',
     hideOtherGames: 'Ocultar otros juegos',
-    showOtherGamesHint: 'Enlaces a los otros juegos de naipes: una columna lateral en pantallas anchas y un botón en la cabecera en las angostas.',
+    showOtherGamesHint: 'Una columna lateral con los otros juegos de naipes en pantallas anchas. El botón de la cabecera siempre los abre.',
   },
 }
 
